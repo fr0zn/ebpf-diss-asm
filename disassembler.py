@@ -123,6 +123,8 @@ def parse_instruction(instr, _id = 0):
 
     #print "INSTR", struct.pack('Q', instr)[::-1].encode('hex')
 
+    instr = struct.unpack('Q',instr)[0]
+
     opcode = (instr & 0x00000000000000ff) >> 0
     dest   = (instr & 0x0000000000000f00) >> 8
     src    = (instr & 0x000000000000f000) >> 12
@@ -209,7 +211,7 @@ def decompile(raw_bytes):
         print "Invalid program length"
         sys.exit(1)
 
-    p_instructions = [struct.unpack('Q',p[i:i+SIZE/8])[0] for i in range(0, len(p), SIZE/8)]
+    p_instructions = [p[i:i+SIZE/8] for i in range(0, len(p), SIZE/8)]
 
     for i, ins in enumerate(p_instructions):
         out += parse_instruction(ins, i)

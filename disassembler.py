@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import struct
 
@@ -33,17 +34,17 @@ LDS = {
 
 # alu fields
 ALU = {
-0x00: 'add' , 
-0x10: 'sub' , 
-0x20: 'mul' , 
-0x30: 'div' , 
+0x00: 'add' ,
+0x10: 'sub' ,
+0x20: 'mul' ,
+0x30: 'div' ,
 0x40: 'or' ,
-0x50: 'and' , 
-0x60: 'lsh' , 
-0x70: 'rsh' , 
-0x80: 'neg' , 
-0x90: 'mod' , 
-0xa0: 'xor' , 
+0x50: 'and' ,
+0x60: 'lsh' ,
+0x70: 'rsh' ,
+0x80: 'neg' ,
+0x90: 'mod' ,
+0xa0: 'xor' ,
 0xb0: 'mov' ,   #/* eBPF only: mov reg to reg */
 0xc0: 'arsh' ,   #/* eBPF only: sign extending shift right */
 0xd0: 'end' ,   #/* eBPF only: endianness conversion */
@@ -127,7 +128,7 @@ def parse_instruction(instr, _id = 0):
     src    = (instr & 0x000000000000f000) >> 12
     offset = (instr & 0x00000000ffff0000) >> 16
     imm    = (instr & 0xffffffff00000000) >> 32
-    
+
     _class = opcode & 0x7
 
     if _class == BPF_ALU or _class == BPF_ALU64:
@@ -136,8 +137,8 @@ def parse_instruction(instr, _id = 0):
         # +----+-+---+
         # |op  |s|cls|
         # +----+-+---+
-        # If the s bit is zero, then the source operand is imm. If s is one, 
-        # then the source operand is src. The op field specifies which ALU or 
+        # If the s bit is zero, then the source operand is imm. If s is one,
+        # then the source operand is src. The op field specifies which ALU or
         # branch operation is to be performed.
         _s  = opcode & 0x08
         _op = opcode & 0xf0
@@ -158,8 +159,8 @@ def parse_instruction(instr, _id = 0):
         # +----+-+---+
         # |op  |s|cls|
         # +----+-+---+
-        # If the s bit is zero, then the source operand is imm. If s is one, 
-        # then the source operand is src. The op field specifies which ALU or 
+        # If the s bit is zero, then the source operand is imm. If s is one,
+        # then the source operand is src. The op field specifies which ALU or
         # branch operation is to be performed.
         _s  = opcode & 0x08
         _op = opcode & 0xf0
@@ -183,7 +184,7 @@ def parse_instruction(instr, _id = 0):
         _mde = opcode & 0xe0
         #print hex(opcode), hex(_mde), hex(_sz)
         if _mde in LDS:
-            if _sz in SIZES:   
+            if _sz in SIZES:
                 mode = LDS[_mde]
                 #print hex(_class), hex(opcode), hex(_mde)
                 if mode == "mem" or mode == "imm":
@@ -209,10 +210,10 @@ def decompile(raw_bytes):
         sys.exit(1)
 
     p_instructions = [struct.unpack('Q',p[i:i+SIZE/8])[0] for i in range(0, len(p), SIZE/8)]
-    
+
     for i, ins in enumerate(p_instructions):
         out += parse_instruction(ins, i)
-    
+
     return out.strip()
 
 
@@ -220,7 +221,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         print "Usage: {} program.bin ".format(sys.argv[0])
-        sys.exit(1) 
+        sys.exit(1)
 
     p = open(sys.argv[1],'rb').read().strip()
 

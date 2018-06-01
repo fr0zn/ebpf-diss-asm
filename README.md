@@ -38,8 +38,8 @@ $ python disassembler.py example/program.bin
 0x0001:   55 09 02 00 ff ff ff ff      jne       r9,       #-1, +2
 0x0002:   b7 00 00 00 00 00 00 00      mov       r0,       #0
 0x0003:   95 00 00 00 00 00 00 00      exit
-0x0004:   18 19 00 00 03 00 00 00      lddw      r9,       #3
-0x0005:   00 00 00 00 00 00 00 00      ldw       r0,       #0
+0x0004:   18 19 00 00 03 00 00 00      lddw      r1,       r9,  #3
+0x0005:   00 00 00 00 00 00 00 00      ldw       r0,       r0,  #0
 0x0006:   bf 91 00 00 00 00 00 00      mov       r1,       r9
 0x0007:   bf a2 00 00 00 00 00 00      mov       r2,       r10
 0x0008:   07 02 00 00 fc ff ff ff      add       r2,       #-4
@@ -47,7 +47,7 @@ $ python disassembler.py example/program.bin
 0x000a:   85 00 00 00 01 00 00 00      call      #1
 0x000b:   55 00 01 00 00 00 00 00      jne       r0,       #0,  +1
 0x000c:   95 00 00 00 00 00 00 00      exit
-0x000d:   79 06 00 00 00 00 00 00      ldxdw     [r0]
+0x000d:   79 06 00 00 00 00 00 00      ldxdw     r6,       [r0]
 0x000e:   bf 91 00 00 00 00 00 00      mov       r1,       r9
 0x000f:   bf a2 00 00 00 00 00 00      mov       r2,       r10
 0x0010:   07 02 00 00 fc ff ff ff      add       r2,       #-4
@@ -55,7 +55,7 @@ $ python disassembler.py example/program.bin
 0x0012:   85 00 00 00 01 00 00 00      call      #1
 0x0013:   55 00 01 00 00 00 00 00      jne       r0,       #0,  +1
 0x0014:   95 00 00 00 00 00 00 00      exit
-0x0015:   79 07 00 00 00 00 00 00      ldxdw     [r0]
+0x0015:   79 07 00 00 00 00 00 00      ldxdw     r7,       [r0]
 0x0016:   bf 91 00 00 00 00 00 00      mov       r1,       r9
 0x0017:   bf a2 00 00 00 00 00 00      mov       r2,       r10
 0x0018:   07 02 00 00 fc ff ff ff      add       r2,       #-4
@@ -63,11 +63,11 @@ $ python disassembler.py example/program.bin
 0x001a:   85 00 00 00 01 00 00 00      call      #1
 0x001b:   55 00 01 00 00 00 00 00      jne       r0,       #0,  +1
 0x001c:   95 00 00 00 00 00 00 00      exit
-0x001d:   79 08 00 00 00 00 00 00      ldxdw     [r0]
+0x001d:   79 08 00 00 00 00 00 00      ldxdw     r8,       [r0]
 0x001e:   bf 02 00 00 00 00 00 00      mov       r2,       r0
 0x001f:   b7 00 00 00 00 00 00 00      mov       r0,       #0
 0x0020:   55 06 03 00 00 00 00 00      jne       r6,       #0,  +3
-0x0021:   79 73 00 00 00 00 00 00      ldxdw     [r7]
+0x0021:   79 73 00 00 00 00 00 00      ldxdw     r3,       [r7]
 0x0022:   7b 32 00 00 00 00 00 00      stxdw     [r2],     r3
 0x0023:   95 00 00 00 00 00 00 00      exit
 0x0024:   55 06 02 00 01 00 00 00      jne       r6,       #1,  +2

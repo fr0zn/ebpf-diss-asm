@@ -194,7 +194,7 @@ def parse_instruction(instr, _id = 0):
                 else:
                     mode_s = mode
                 if _class == BPF_LD:
-                    return F_I(_id, instr, 'ld' + mode_s + SIZES[_sz], reg(dest), imm_s(imm))
+                    return F_I(_id, instr, 'ld' + mode_s + SIZES[_sz],reg(src), reg(dest), imm_s(imm))
                 elif _class == BPF_LDX:
                     return F_I(_id, instr, 'ldx' + mode_s  + SIZES[_sz], reg(dest), mem(reg(src), offset))
                 elif _class == BPF_ST:
@@ -203,7 +203,7 @@ def parse_instruction(instr, _id = 0):
                     return F_I(_id, instr, 'stx' + mode_s + SIZES[_sz], mem(reg(dest), offset), reg(src))
 
 
-    return "(Invalid instruction)", struct.pack('Q', instr)[::-1].encode('hex')
+    return "(Invalid instruction)" + struct.pack('Q', instr)[::-1].encode('hex')
 
 def decompile(raw_bytes):
     out = ""

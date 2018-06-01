@@ -196,7 +196,7 @@ def parse_instruction(instr, _id = 0):
                 if _class == BPF_LD:
                     return F_I(_id, instr, 'ld' + mode_s + SIZES[_sz], reg(dest), imm_s(imm))
                 elif _class == BPF_LDX:
-                    return F_I(_id, instr, 'ldx' + mode_s  + SIZES[_sz], mem(reg(src), offset))
+                    return F_I(_id, instr, 'ldx' + mode_s  + SIZES[_sz], reg(dest), mem(reg(src), offset))
                 elif _class == BPF_ST:
                     return F_I(_id, instr, 'st' + mode_s + SIZES[_sz], mem(reg(dest), offset), imm_s(imm))
                 elif _class == BPF_STX:

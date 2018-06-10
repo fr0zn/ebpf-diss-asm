@@ -68,12 +68,16 @@ JMP = {
 0xd0: 'jsle' ,  #/* eBPF only: signed '<=' */
 }
 
-defs = {
-    0x7fff0000 : 'SECCOMP_RET_ALLOW',
-    0x30000:     'SECCOMP_RET_TRAP',
-    0:           'SECCOMP_RET_KILL'
-
+seccomp_ret = {
+    0x00000000: 'SECCOMP_RET_KILL',
+    0x00030000: 'SECCOMP_RET_TRAP',
+    0x00050000: 'SECCOMP_RET_ERRNO',
+    0x7ff00000: 'SECCOMP_RET_TRACE',
+    0x7fff0000: 'SECCOMP_RET_ALLOW',
 }
+
+SECCOMP_RET_ACTION = 0x7fff0000
+SECCOMP_RET_DATA   = 0x0000ffff
 
 def int32(x):
   if x>0xFFFFFFFF:
@@ -220,8 +224,14 @@ def parse_instruction(instr, _id = 0):
                     return F_I(_id, instr, 'stx' + mode_s + SIZES[_sz], mem(reg(dest), offset), reg(src))
     if _class == BPF_RET:
         value = imm_s(imm)
-        if imm in defs:
-            value = defs[imm]
+        # test seccomp ret value
+        sec_data = imm & SECCOMP_RET_DATA
+        sec_action = imm & SECCOMP_RET_ACTION
+        if sec_action in seccomp_ret:
+            if sec_data != 0:
+                value = seccomp_ret[sec_action] + '(' + str(sec_data) + ')'
+            else:
+                value = seccomp_ret[sec_action]
 
         return F_I(_id, instr, 'ret', value)
 

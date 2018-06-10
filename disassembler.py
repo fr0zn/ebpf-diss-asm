@@ -95,16 +95,22 @@ def imm_s(x):
 def reg(x):
     return 'r'+str(x)
 
-def o(off):
+def o_jmp(off):
     false_o = (off & 0xff00)>>8
     true_o = (off & 0x00ff)
     if false_o == 0:
         return "+" + str(true_o)
     return 'T:' + "+" + str(true_o) + ', F:' + "+" + str(false_o)
 
+def o_mem(off):
+    if off <= 32767:
+        return "+" + str(off)
+    else:
+        return "-" + str(65536-off)
+
 def mem(base, off):
     if off != 0:
-        return "[%s%s]" % (base, o(off))
+        return "[%s%s]" % (base, o_mem(off))
     else:
         return "[%s]" % base
 
@@ -184,9 +190,9 @@ def parse_instruction(instr, _id = 0):
             if ins == "call": # call
                 return F_I(_id, instr, ins, imm_s(imm))
             if _s == 0: # imm
-                return F_I(_id, instr, ins, reg(dest), imm_s(imm), o(offset))
+                return F_I(_id, instr, ins, reg(dest), imm_s(imm), o_jmp(offset))
             else: # src
-                return F_I(_id, instr, ins, reg(dest), reg(src), o(offset))
+                return F_I(_id, instr, ins, reg(dest), reg(src), o_jmp(offset))
     if _class in [BPF_LD, BPF_LDX, BPF_ST, BPF_STX]:
         # msb      lsb
         #  000 00 000

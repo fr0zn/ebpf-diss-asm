@@ -123,7 +123,10 @@ def parse_instruction(instr, _id = 0):
 
     #print "INSTR", struct.pack('Q', instr)[::-1].encode('hex')
 
-    instr = struct.unpack('Q',instr)[0]
+    try:
+        instr = struct.unpack('Q',instr)[0]
+    except:
+        return ""
 
     opcode = (instr & 0x00000000000000ff) >> 0
     dest   = (instr & 0x0000000000000f00) >> 8
@@ -201,17 +204,20 @@ def parse_instruction(instr, _id = 0):
                     return F_I(_id, instr, 'st' + mode_s + SIZES[_sz], mem(reg(dest), offset), imm_s(imm))
                 elif _class == BPF_STX:
                     return F_I(_id, instr, 'stx' + mode_s + SIZES[_sz], mem(reg(dest), offset), reg(src))
-
+    if _class == BPF_RET:
+        return F_I(_id, instr, 'ret', imm_s(imm))
 
     return "(Invalid instruction)" + struct.pack('Q', instr)[::-1].encode('hex')
 
 def decompile(raw_bytes):
     out = ""
-    if len(p) % (SIZE/8) != 0:
+    if raw_bytes[-1] == '\n':
+        raw_bytes = raw_bytes[:-1]
+    if len(raw_bytes) % (SIZE/8) != 0:
         print "Invalid program length"
-        sys.exit(1)
+        #sys.exit(1)
 
-    p_instructions = [p[i:i+SIZE/8] for i in range(0, len(p), SIZE/8)]
+    p_instructions = [raw_bytes[i:i+SIZE/8] for i in range(0, len(raw_bytes), SIZE/8)]
 
     for i, ins in enumerate(p_instructions):
         out += parse_instruction(ins, i)
@@ -225,7 +231,7 @@ if __name__ == '__main__':
         print "Usage: {} program.bin ".format(sys.argv[0])
         sys.exit(1)
 
-    p = open(sys.argv[1],'rb').read().strip()
+    p = open(sys.argv[1],'rb').read()
 
     print decompile(p)
 

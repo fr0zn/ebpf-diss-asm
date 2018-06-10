@@ -68,6 +68,13 @@ JMP = {
 0xd0: 'jsle' ,  #/* eBPF only: signed '<=' */
 }
 
+defs = {
+    0x7fff0000 : 'SECCOMP_RET_ALLOW',
+    0x30000:     'SECCOMP_RET_TRAP',
+    0:           'SECCOMP_RET_KILL'
+
+}
+
 def int32(x):
   if x>0xFFFFFFFF:
     raise OverflowError
@@ -89,10 +96,11 @@ def reg(x):
     return 'r'+str(x)
 
 def o(off):
-    if off <= 32767:
-        return "+" + str(off)
-    else:
-        return "-" + str(65536-off)
+    false_o = (off & 0xff00)>>8
+    true_o = (off & 0x00ff)
+    if false_o == 0:
+        return "+" + str(true_o)
+    return 'T:' + "+" + str(true_o) + ', F:' + "+" + str(false_o)
 
 def mem(base, off):
     if off != 0:
@@ -205,7 +213,11 @@ def parse_instruction(instr, _id = 0):
                 elif _class == BPF_STX:
                     return F_I(_id, instr, 'stx' + mode_s + SIZES[_sz], mem(reg(dest), offset), reg(src))
     if _class == BPF_RET:
-        return F_I(_id, instr, 'ret', imm_s(imm))
+        value = imm_s(imm)
+        if imm in defs:
+            value = defs[imm]
+
+        return F_I(_id, instr, 'ret', value)
 
     return "(Invalid instruction)" + struct.pack('Q', instr)[::-1].encode('hex')
 

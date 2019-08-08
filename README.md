@@ -2,6 +2,35 @@
 
 eBPD disassembler and assembler written in python
 
+## Seccomp filter disassembly example
+
+```
+0x0000:   20 00 00 00 00 00 00 00      ldabsw    r0,       r0,  #0
+0x0001:   15 00 00 01 00 00 00 00      jeq       r0,       #0,  T:+0, F:+1
+0x0002:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0003:   15 00 00 01 01 00 00 00      jeq       r0,       #1,  T:+0, F:+1
+0x0004:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0005:   15 00 00 01 03 00 00 00      jeq       r0,       #3,  T:+0, F:+1
+0x0006:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0007:   15 00 00 01 04 00 00 00      jeq       r0,       #4,  T:+0, F:+1
+0x0008:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0009:   15 00 00 01 05 00 00 00      jeq       r0,       #5,  T:+0, F:+1
+0x000a:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x000b:   15 00 00 01 06 00 00 00      jeq       r0,       #6,  T:+0, F:+1
+0x000c:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x000d:   15 00 00 01 09 00 00 00      jeq       r0,       #9,  T:+0, F:+1
+0x000e:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x000f:   15 00 00 01 0b 00 00 00      jeq       r0,       #11, T:+0, F:+1
+0x0010:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0011:   15 00 00 01 0f 00 00 00      jeq       r0,       #15, T:+0, F:+1
+0x0012:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0013:   15 00 00 01 23 00 00 00      jeq       r0,       #35, T:+0, F:+1
+0x0014:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0015:   15 00 00 01 3c 00 00 00      jeq       r0,       #60, T:+0, F:+1
+0x0016:   06 00 00 00 00 00 ff 7f      ret       SECCOMP_RET_ALLOW     
+0x0017:   06 00 00 00 00 00 00 00      ret       SECCOMP_RET_KILL
+```
+
 ## Disassembler example
 
 ```
